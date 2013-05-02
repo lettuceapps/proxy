@@ -1,0 +1,20 @@
+
+function apiProxy(app) {
+    app.LOG.info('checking apiProxy');
+    var apiVersion = 1.0;
+    var pattern = new RegExp('\/' + apiVersion + '\/.*');
+
+    //check configs
+
+    return function(req, res, next) {
+        app.LOG.info('request-api');
+
+        if (req.url.match(pattern)) {
+            routingProxy.proxyRequest(req, res, {host: app.CONFIG.api.host, port: app.CONFIG.api.port});
+        } else {
+            next();
+        }
+    }
+}
+
+module.exports = apiProxy;

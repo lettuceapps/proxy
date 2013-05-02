@@ -1,0 +1,17 @@
+{
+    "port": "80",
+    "proxyPath": "./proxies/",
+
+    "api": {
+        "host" : "api.lettuceapps.com",
+        "port" : "80"
+    },
+    "hub": {
+        "host" : "hub.lettuceapps.com",
+        "port" : "80"
+    },
+    "www": {
+        "host" : "www.lettuceapps.com",
+        "port" : "80"
+    }
+}
