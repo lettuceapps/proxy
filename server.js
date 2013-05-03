@@ -5,17 +5,14 @@ var fs          = require('fs'),
     cluster     = require('cluster'),
     http        = require('http'),
     https       = require('https'),
-    express     = require('express'),
-    httpProxy   = require('http-proxy');
+    express     = require('express');
 
 var app          = express();
-var routingProxy = new httpProxy.RoutingProxy();
 
 app.CONFIG       = require('config');
 app.LOG          = winston;
 
-var proxyPath  = app.CONFIG.proxyPath,
-    proxies    = [];
+var proxies = [];
 
 function loadProxies(loadPath) {
     var dir = path.resolve(loadPath);
@@ -33,9 +30,11 @@ function loadProxies(loadPath) {
     }
 }
 
+app.enable('trust proxy');
+
 app.configure(function () {
     // load proxies
-    loadProxies(proxyPath);
+    loadProxies(app.CONFIG.proxyPath);
 
     for(var p in proxies) {
         app.use(proxies[p](app));
@@ -54,8 +53,15 @@ app.configure(function () {
     app.use(app.router);
 });
 
+var options = {
+    key: fs.readFileSync('ssl_key/lettuceapps.com.key'),
+    cert: fs.readFileSync('ssl_key/lettuceapps.com.crt')
+};
+
+//http.createServer(app).listen(80);
+
 app.LOG.info('using port: ' + app.CONFIG.port);
-app.listen(app.CONFIG.port);
+https.createServer(options, app).listen(app.CONFIG.port);
 
 module.exports = app;
 // module.exports = {

@@ -1,8 +1,10 @@
+var httpProxy   = require('http-proxy');
 
 function apiProxy(app) {
     app.LOG.info('checking apiProxy');
     var apiVersion = 1.0;
     var pattern = new RegExp('\/' + apiVersion + '\/.*');
+    var routingProxy = new httpProxy.RoutingProxy();
 
     //check configs
 
