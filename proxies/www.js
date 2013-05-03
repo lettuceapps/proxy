@@ -1,5 +1,5 @@
 var url         = require('url'),
-    request     = require('request'),
+    // request     = require('request'),
     // cookie      = require('cookie'),
     http        = require('http'),
     https       = require('https'),
@@ -57,18 +57,73 @@ function wwwProxy(app) {
                 });
             };
 
-            var checkValid = function (shop) {
-                request(www, function (error, response, body) {
-                    if (!error && response.statusCode == 200) {
-                        // app.LOG.info('good');
-                        // app.LOG.info('request');
-                        // app.LOG.info(app.wwwUrl);
-                        //app.wwwUrl.push(shop);
-                        return proxyIt();
-                    } else {
-                        return next();
-                    }
+            var checkValid = function (www, shop) {                
+                https.get(www, function(res) {
+                    app.LOG.info("statusCode: ", res.statusCode);
+                    app.LOG.info("headers: ", res.headers);
+
+                    res.on('data', function(d) {
+                        // process.stdout.write(d);
+                    });
+
+                    res.on('end', function(d) {
+                        app.LOG.info('end');
+
+                        // do what you do
+                        if (res.statusCode == 200) {
+                            //app.wwwUrl.push(shop);
+                            return proxyIt();
+                        } else {
+                            return next();
+                        }
+
+                    });
+
+                }).on('error', function(e) {
+                    app.LOG.error(e);
                 });
+
+
+                // var u2 = url.parse(www);
+
+                // var options = {
+                //     host: u2.host,
+                //     path: u2.path,
+                //     method: 'GET',
+                //     headers: {
+                //         'Host': u2.host,
+                //         'Cookie': req.headers.cookie,
+                //     }
+                // };
+
+                // var callback = function(response) {
+                //     // var str = '';
+
+                //     //another chunk of data has been recieved, so append it to `str`
+                //     // response.on('data', function (chunk) {
+                //         // str += chunk;
+                //     // });
+
+                //     response.on("error", function(e){
+                //         app.LOG.error("error: " + e.message);
+                //     });
+
+                //     //the whole response has been recieved, so we just print it out here
+                //     response.on('end', function () {
+                //         // do what you do
+                //         if (response.statusCode == 200) {
+                //             // app.LOG.info('good');
+                //             // app.LOG.info('request');
+                //             // app.LOG.info(app.wwwUrl);
+                //             //app.wwwUrl.push(shop);
+                //             return proxyIt();
+                //         } else {
+                //             return next();
+                //         }
+                //     });
+                // }
+
+                // http.request(options, callback).end();
             }
 
             if (segments.length > 1) {
@@ -96,7 +151,7 @@ function wwwProxy(app) {
                     return proxyIt();
                 } else {
                     app.LOG.info('check');
-                    return checkValid(shop);
+                    return checkValid(www, shop);
                 }
             } else {
                 return next();

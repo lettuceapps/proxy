@@ -1,5 +1,5 @@
 var url         = require('url'),
-    request     = require('request'),
+    // request     = require('request'),
     // cookie      = require('cookie'),
     querystring      = require('querystring'),
     http        = require('http'),
@@ -104,25 +104,108 @@ function hubProxy(app) {
             };
 
             var checkValid = function (www, shop) {
-                request(www, function (error, response, body) {
-                    //app.LOG.info('body: ' + body);
-                    //app.LOG.info('response: ' + JSON.stringify(response.headers));
-                    //app.LOG.info(response.statusCode);
+                var u2 = url.parse(www);
+                app.LOG.info(u2);
 
-                    var isLoginRedirect = false;
+                // var options = {
+                //     hostname: u2.host,
+                //     port: 443,
+                //     path: u2.path,
+                //     method: 'GET',
+                //     headers: {
+                //         'Host': u2.host,
+                //         'Cookie': req.headers.cookie,
+                //     }
+                // };
 
-                    //check if login redirect
-                    if (response.headers.hasOwnProperty('refresh')) {
-                        isLoginRedirect = true;
-                    }
+                https.get(www, function(res) {
+                    app.LOG.info("statusCode: ", res.statusCode);
+                    app.LOG.info("headers: ", res.headers);
 
-                    if (!error && response.statusCode == 200) {
-                        //app.hubUrl.push(shop);
-                        return proxyIt(shop, isLoginRedirect);
-                    } else {
-                        return next();
-                    }
+                    res.on('data', function(d) {
+                        // process.stdout.write(d);
+                    });
+
+                    res.on('end', function(d) {
+                        app.LOG.info('end');
+                        var isLoginRedirect = false;
+
+                        if (res.headers.hasOwnProperty('refresh')) {
+                            isLoginRedirect = true;
+                        }
+
+                        // do what you do
+                        if (res.statusCode == 200) {
+                            //app.wwwUrl.push(shop);
+                            return proxyIt(shop, isLoginRedirect);
+                        } else {
+                            return next();
+                        }
+
+                    });
+
+                }).on('error', function(e) {
+                    app.LOG.error(e);
                 });
+
+
+                // var request = https.request(options, function(response) {
+                //     console.log("statusCode: ", response.statusCode);
+                //     // console.log("headers: ", response.headers);
+
+                //     // response.on('data', function(d) {
+                //         // process.stdout.write(d);
+                //     // });
+
+                //     response.on('end', function () {
+                //         app.LOG.info('!!!done');
+
+                //         if (response.headers.hasOwnProperty('refresh')) {
+                //             isLoginRedirect = true;
+                //         }
+
+                //         // do what you do
+                //         if (response.statusCode == 200) {
+                //             // app.LOG.info('good');
+                //             // app.LOG.info('request');
+                //             // app.LOG.info(app.wwwUrl);
+                //             //app.wwwUrl.push(shop);
+                //             return proxyIt(shop, isLoginRedirect);
+                //         } else {
+                //             return next();
+                //         }
+                //     });
+                // });
+
+                // request.end();
+
+                // request.on('error', function(e) {
+                //     app.LOG.error(e);
+                // });
+
+
+
+
+
+                // request(www, function (error, response, body) {
+                //     // app.LOG.info('body: ' + body);
+                //     app.LOG.info('response: ' + JSON.stringify(response.headers));
+                //     app.LOG.info(response.statusCode);
+
+                //     var isLoginRedirect = false;
+
+                //     //check if login redirect
+                //     if (response.headers.hasOwnProperty('refresh')) {
+                //         isLoginRedirect = true;
+                //     }
+
+                //     if (!error && response.statusCode == 200) {
+                //         //app.hubUrl.push(shop);
+                //         return proxyIt(shop, isLoginRedirect);
+                //     } else {
+                //         return next();
+                //     }
+                // });
             }
 
             if (segments.length > 1) {
