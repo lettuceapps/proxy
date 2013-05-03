@@ -57,17 +57,24 @@ function wwwProxy(app) {
                 });
             };
 
-            var checkValid = function (www, shop) {                
+            var checkValid = function (www, shop) {
+                www = url.parse(www);
+                www.headers = www.headers || {};
+                www.headers.cookie = req.headers.cookie;
+
+                // app.LOG.info("cookie: " + JSON.stringify(www.headers.cookie));
+                // app.LOG.info("cookie: " + JSON.stringify(req.headers.cookie));
+
                 https.get(www, function(res) {
-                    app.LOG.info("statusCode: ", res.statusCode);
-                    app.LOG.info("headers: ", res.headers);
+                    // app.LOG.info("statusCode: ", res.statusCode);
+                    // app.LOG.info("headers: ", res.headers);
 
                     res.on('data', function(d) {
                         // process.stdout.write(d);
                     });
 
                     res.on('end', function(d) {
-                        app.LOG.info('end');
+                        // app.LOG.info('end');
 
                         // do what you do
                         if (res.statusCode == 200) {
@@ -82,48 +89,6 @@ function wwwProxy(app) {
                 }).on('error', function(e) {
                     app.LOG.error(e);
                 });
-
-
-                // var u2 = url.parse(www);
-
-                // var options = {
-                //     host: u2.host,
-                //     path: u2.path,
-                //     method: 'GET',
-                //     headers: {
-                //         'Host': u2.host,
-                //         'Cookie': req.headers.cookie,
-                //     }
-                // };
-
-                // var callback = function(response) {
-                //     // var str = '';
-
-                //     //another chunk of data has been recieved, so append it to `str`
-                //     // response.on('data', function (chunk) {
-                //         // str += chunk;
-                //     // });
-
-                //     response.on("error", function(e){
-                //         app.LOG.error("error: " + e.message);
-                //     });
-
-                //     //the whole response has been recieved, so we just print it out here
-                //     response.on('end', function () {
-                //         // do what you do
-                //         if (response.statusCode == 200) {
-                //             // app.LOG.info('good');
-                //             // app.LOG.info('request');
-                //             // app.LOG.info(app.wwwUrl);
-                //             //app.wwwUrl.push(shop);
-                //             return proxyIt();
-                //         } else {
-                //             return next();
-                //         }
-                //     });
-                // }
-
-                // http.request(options, callback).end();
             }
 
             if (segments.length > 1) {
