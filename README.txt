@@ -5,8 +5,13 @@ npm install
 cp config/development.json.sample config/development.json
 
 # run dev
-node server.js
-(new run) grunt server
+sudo node server.js
+(new run) sudo grunt server
 
 # run prod
-NODE_ENV=production node server.js
+sudo NODE_ENV=production node server.js
+
+
+# debug
+sudo npm install -g node-inspector
+sudo node --debug server.js

@@ -1,5 +1,6 @@
 var url         = require('url'),
     request     = require('request'),
+    // cookie      = require('cookie'),
     http        = require('http'),
     https       = require('https'),
     httpProxy   = require('http-proxy');
@@ -12,7 +13,15 @@ function wwwProxy(app) {
         //in mem cache shop, first part of path
         app.wwwUrl = app.wwwUrl || ['', 'trial'];
 
-        //host name
+        // // check realm
+        // var cookies = cookie.parse(req.headers.cookie);
+        // app.realm = cookies.realm || 'www';
+
+        // if (app.realm != 'www') {
+        //     return next();
+        // }
+
+        //check host name
         var h = req.headers.host.split(':');
         var host = h[0];
 
@@ -20,23 +29,6 @@ function wwwProxy(app) {
             //check if the path works on www
             var u = url.parse(req.url);
             var segments = u.pathname.split('/');
-
-            var protocol = 'http';
-            var isHttps = false;
-
-            if (app.CONFIG.www.port == "443") {
-                protocol = 'https';
-                isHttps = true;
-            }
-
-            var www = url.format({ 
-                "protocol": protocol,
-                "host":     app.CONFIG.www.host,
-                "pathname": u.pathname,
-                "search":   u.search
-            });
-
-            //app.LOG.info('www :' + www);
 
             var proxyIt = function() {
                 //app.LOG.info(app.CONFIG.www);
@@ -54,6 +46,8 @@ function wwwProxy(app) {
                 var routingProxy = new httpProxy.RoutingProxy(options);
                 var buffer = httpProxy.buffer(req);
 
+                // var realm = cookie.serialize('realm', 'www');
+
                 return routingProxy.proxyRequest(req, res, {
                     // target: {
                         host: app.CONFIG.www.host, 
@@ -69,7 +63,7 @@ function wwwProxy(app) {
                         // app.LOG.info('good');
                         // app.LOG.info('request');
                         // app.LOG.info(app.wwwUrl);
-                        app.wwwUrl.push(shop);
+                        //app.wwwUrl.push(shop);
                         return proxyIt();
                     } else {
                         return next();
@@ -80,12 +74,28 @@ function wwwProxy(app) {
             if (segments.length > 1) {
                 var shop = segments[1];
                 // app.LOG.info('shop :' + JSON.stringify(shop));
+                var protocol = 'http';
+                var isHttps = false;
+
+                if (app.CONFIG.www.port == "443") {
+                    protocol = 'https';
+                    isHttps = true;
+                }
+
+                var www = url.format({ 
+                    "protocol": protocol,
+                    "host":     app.CONFIG.www.host,
+                    "pathname": u.pathname,
+                    "search":   u.search
+                });
+
+                app.LOG.info('www :' + www);
 
                 if (app.wwwUrl.indexOf(shop) != -1) {
-                    // app.LOG.info('cache');
+                    app.LOG.info('cache');
                     return proxyIt();
                 } else {
-                    // app.LOG.info('check');
+                    app.LOG.info('check');
                     return checkValid(shop);
                 }
             } else {
