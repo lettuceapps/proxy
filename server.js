@@ -15,13 +15,13 @@ app.LOG          = winston;
 var proxies = [];
 
 function loadProxies(loadPath) {
-    var dir = path.resolve(loadPath);
-
-    var files = fs.readdirSync(dir);
+    // var dir = path.resolve(loadPath);
+    // var files = fs.readdirSync(dir);
+    var files = app.CONFIG.proxies;
 
     for(var f in files) {
         var file = files[f];
-        var aProxy = require(path.join(dir, file));
+        var aProxy = require(path.resolve(file));
         // var ext = path.extname(file);
         // var fname = path.basename(file);
 

@@ -5,17 +5,18 @@ var url         = require('url'),
     httpProxy   = require('http-proxy');
 
 function wwwProxy(app) {
-    app.LOG.info('checking wwwProxy');
+    app.LOG.info('**** checking wwwProxy');
     return function(req, res, next) {
         app.LOG.info('request-www');
         
+        //in mem cache shop, first part of path
         app.wwwUrl = app.wwwUrl || ['', 'trial'];
 
+        //host name
         var h = req.headers.host.split(':');
         var host = h[0];
-        //app.LOG.info('host :' + host);
 
-        if (host === app.CONFIG.www.host) {
+        if (host === app.CONFIG.www.source.host) {
             //check if the path works on www
             var u = url.parse(req.url);
             var segments = u.pathname.split('/');
@@ -37,7 +38,7 @@ function wwwProxy(app) {
 
             //app.LOG.info('www :' + www);
 
-            var proxyToWww = function() {
+            var proxyIt = function() {
                 //app.LOG.info(app.CONFIG.www);
 
                 var options = {
@@ -51,11 +52,13 @@ function wwwProxy(app) {
                 };
 
                 var routingProxy = new httpProxy.RoutingProxy(options);
+                var buffer = httpProxy.buffer(req);
 
                 return routingProxy.proxyRequest(req, res, {
                     // target: {
                         host: app.CONFIG.www.host, 
-                        port: app.CONFIG.www.port
+                        port: app.CONFIG.www.port,
+                        buffer: buffer
                     // }
                 });
             };
@@ -63,11 +66,11 @@ function wwwProxy(app) {
             var checkValid = function (shop) {
                 request(www, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
-                        //app.LOG.info('good');
-                        app.LOG.info('request');
-                        app.LOG.info(app.wwwUrl);
+                        // app.LOG.info('good');
+                        // app.LOG.info('request');
+                        // app.LOG.info(app.wwwUrl);
                         app.wwwUrl.push(shop);
-                        return proxyToWww();
+                        return proxyIt();
                     } else {
                         return next();
                     }
@@ -76,13 +79,13 @@ function wwwProxy(app) {
 
             if (segments.length > 1) {
                 var shop = segments[1];
-                app.LOG.info('shop :' + JSON.stringify(shop));
+                // app.LOG.info('shop :' + JSON.stringify(shop));
 
                 if (app.wwwUrl.indexOf(shop) != -1) {
-                    app.LOG.info('cache');
-                    return proxyToWww();
+                    // app.LOG.info('cache');
+                    return proxyIt();
                 } else {
-                    app.LOG.info('check');
+                    // app.LOG.info('check');
                     return checkValid(shop);
                 }
             } else {
