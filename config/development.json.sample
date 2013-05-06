@@ -3,6 +3,10 @@
     "proxies": ["./proxies/hub.js", "./proxies/www.js"],
 
     "api": {
+        "source": {
+            "host": "preview.lettuceapps.com"
+        },
+
         "host" : "api.lettuceapps.com",
         "port" : "80"
     },
