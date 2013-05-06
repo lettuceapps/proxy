@@ -1,6 +1,6 @@
 var url         = require('url'),
     cookie      = require('cookie'),
-    querystring      = require('querystring'),
+    querystring = require('querystring'),
     http        = require('http'),
     https       = require('https'),
     httpProxy   = require('http-proxy');
@@ -48,7 +48,7 @@ function hubProxy(app) {
         });
     };
 
-    var checkValid = function (www, shop, req, res) {
+    var checkValid = function (www, shop, req, res, next) {
         www = url.parse(www);
         www.headers = www.headers || {};
         www.headers.cookie = req.headers.cookie;
@@ -118,7 +118,7 @@ function hubProxy(app) {
                 }
             } else {
                 if (!existShop(shop)) {
-                return next();
+                    return next();
                 }
             }
 
@@ -148,7 +148,7 @@ function hubProxy(app) {
 
                     app.LOG.info('hub :' + www);
 
-                    return checkValid(www, shop, req, res);
+                    return checkValid(www, shop, req, res, next);
                 }
             } else {
                 return next();
