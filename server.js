@@ -49,11 +49,15 @@ app.configure(function () {
 });
 
 var options = {
-    key: fs.readFileSync('ssl_key/lettuceapps.com.key'),
-    cert: fs.readFileSync('ssl_key/lettuceapps.com.crt')
+    key: fs.readFileSync(path.resolve('./ssl_key/lettuceapps.com.key')),
+    cert: fs.readFileSync(path.resolve('./ssl_key/lettuceapps.com.crt'))
 };
 
 app.LOG.info('using port: ' + app.CONFIG.port);
-https.createServer(options, app).listen(app.CONFIG.port);
+var server = https.createServer(options, app);
+server.listen(app.CONFIG.port);
 
-module.exports = app;
+module.exports = {
+    app : app,
+    server : server
+}

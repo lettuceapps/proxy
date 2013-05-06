@@ -19,7 +19,7 @@ module.exports = function(grunt) {
     var port = 3000;
     grunt.registerTask('server', 'Start a custom web server.', function() {
         grunt.log.writeln('Starting web server on port ' + port);
-        require('./server.js').listen(port);
+        require(path.resolve('./server.js')).server.listen(port);
     });
 
 
