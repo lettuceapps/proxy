@@ -26,7 +26,7 @@ sudo node --debug server.js
 sudo mkdir /var/www
 sudo chown www-data:www-data /var/www/
 cd /var/www
-sudo -u www-data ln -sfn /mnt/hgfs/viphak/Lettuce/github/proxy
+sudo -u www-data ln -sfn [proxy-project]/proxy
 
 
 # startup / as an upstart sevice

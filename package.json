@@ -18,13 +18,10 @@
     "grunt-express": "~0.2.0",
     "grunt-regarde": "~0.1.1"
   },
-  "keywords": [
-    "grunt-express",
-    "example"
-  ],
   "dependencies": {
     "config": "*",
     "winston": "*",
+    "cookie": "*",
     "http-proxy": "*",
     "express": "~3.1.0",
     "socket.io": "~0.9.13",
