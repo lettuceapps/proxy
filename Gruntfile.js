@@ -1,28 +1,51 @@
 'use strict';
 
-var path = require('path');
+var path    = require('path'),
+    fs      = require('fs'),
+    https   = require('https');
+
 
 module.exports = function(grunt) {
-  //   grunt.initConfig({
-  //       express: {
-  //           bases: 'www-root',
-  //           server: path.resolve('./server')
-  //       }
-  //   });
 
-  // grunt.loadNpmTasks('grunt-express');
+// var server = require('./app/server.js');
+// var serverPort = server.app.get('port');
+var serverPort = 443;
 
-  // grunt.registerTask('default', ['express']);
+  grunt.initConfig({
+    express: {
+    custom: {
+        options: {
+          watchChanges: true,
+          keepaline: true,
+          port: serverPort,
+          bases: 'www-root',
+          server: path.resolve('./app/server')
+      }
+    }
+    }
+  });
+
+
+
+  grunt.loadNpmTasks('grunt-express');
+
+  grunt.registerTask('server', ['express', 'express-keepalive']);
 
 //NODE_ENV=production
 
-    var port = 3000;
-    grunt.registerTask('server', 'Start a custom web server.', function() {
-        grunt.log.writeln('Starting web server on port ' + port);
-        require(path.resolve('./server.js')).server.listen(port);
-    });
+  // grunt.registerTask('server', 'Start the appllication web server.', function() {
+
+  //   var options = {
+  //       key: fs.readFileSync(path.resolve('./ssl_key/lettuceapps.com.key')),
+  //       cert: fs.readFileSync(path.resolve('./ssl_key/lettuceapps.com.crt'))
+  //   };
+
+  //   https.createServer(options, server).listen(port, function(){
+  //     grunt.log.writeln('Starting web server on port ' + port + '.');
+  //   });
+
+  // });
 
 
   grunt.registerTask('default', ['server']);
-
 }
