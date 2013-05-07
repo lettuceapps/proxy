@@ -18,7 +18,7 @@ app.LOG         = winston;
 function loadProxies(files) {
     for(var f in files) {
         var file = files[f];
-        var aProxy = require(path.resolve(file));
+        var aProxy = require(path.resolve(__dirname, file));
 
         proxies.push(aProxy);
         app.LOG.info('proxy loaded: ' + file);
@@ -52,8 +52,8 @@ app.configure(function () {
 
 app.LOG.info('using port: ' + app.CONFIG.port);
 var options = {
-    key: fs.readFileSync(path.resolve('./ssl_key/lettuceapps.com.key')),
-    cert: fs.readFileSync(path.resolve('./ssl_key/lettuceapps.com.crt'))
+    key: fs.readFileSync(path.resolve(__dirname, '../ssl_key/lettuceapps.com.key')),
+    cert: fs.readFileSync(path.resolve(__dirname, '../ssl_key/lettuceapps.com.crt'))
 };
 
 var server = https.createServer(options, app);
