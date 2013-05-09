@@ -4,6 +4,7 @@ var url         = require('url'),
     httpProxy   = require('http-proxy');
 
 function wwwProxy(app) {
+    app.CONFIG.www.paths = [];
     app.LOG.info('checking wwwProxy');
 
     var proxyIt = function(req, res) {
@@ -36,7 +37,7 @@ function wwwProxy(app) {
             response.on('end', function(d) {
                 // do what you do
                 if (response.statusCode == 200) {
-                    //app.wwwUrl.push(shop);
+                    //app.CONFIG.www.paths.push(shop);
                     return proxyIt(req, res);
                 } else {
                     return next();
@@ -49,11 +50,17 @@ function wwwProxy(app) {
         });
     };
 
+    // javascript redirect
+    // var redirectToHub() { 
+    // };
+
     return function(req, res, next) {
         app.LOG.info('**** request-www');
         
         //in mem cache shop, first part of path
-        app.wwwUrl = app.wwwUrl || ['', 'trial'];
+        app.CONFIG.www.paths = app.CONFIG.www.paths || ['', 'trial'];
+        var jsUrl = ['checkout', 'referrals', 'grow', 'shopify', 'shopify_order_and_inventory_management', 'shopify_inventory_management', 'shopify_inventory_management_2'];
+        app.CONFIG.www.paths = app.CONFIG.www.paths.concat(jsUrl)
 
         //check host name
         var h = req.headers.host.split(':');
@@ -76,7 +83,7 @@ function wwwProxy(app) {
 
                 app.LOG.info('www :' + www);
 
-                if (app.wwwUrl.indexOf(shop) != -1) {
+                if (app.CONFIG.www.paths.indexOf(shop) != -1) {
                     return proxyIt(req, res);
                 } else {
                     return checkValid(www, shop, req, res, next);

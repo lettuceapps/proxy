@@ -1,0 +1,29 @@
+{
+    "port": "443",
+    "proxies": ["./proxies/hub.js", "./proxies/www.js"],
+
+    "api": {
+        "source": {
+            "host": "preview.lettuceapps.com"
+        },
+
+        "host" : "api.lettuceapps.com",
+        "port" : "80"
+    },
+    "hub": {
+        "source": {
+            "host": "preview.lettuceapps.com"
+        },
+        
+        "host" : "staging.lettuceapps.com",
+        "port" : "443"
+    },
+    "www": {
+        "source": {
+            "host": "preview.lettuceapps.com"
+        },
+        
+        "host" : "preview.lettuceapps.com",
+        "port" : "443"
+    }
+}
