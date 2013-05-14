@@ -6,7 +6,7 @@ var url         = require('url'),
     httpProxy   = require('http-proxy');
 
 function hubProxy(app) {
-    app.CONFIG.hub.paths = [];
+    app.CONFIG.hub.paths = null;
     app.LOG.info('checking hubroxy');
 
     var existShop = function(shop) {

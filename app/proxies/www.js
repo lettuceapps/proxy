@@ -4,7 +4,7 @@ var url         = require('url'),
     httpProxy   = require('http-proxy');
 
 function wwwProxy(app) {
-    app.CONFIG.www.paths = [];
+    app.CONFIG.www.paths = null;
     app.LOG.info('checking wwwProxy');
 
     var proxyIt = function(req, res) {
