@@ -6,10 +6,11 @@ var url         = require('url'),
     httpProxy   = require('http-proxy');
 
 function hubProxy(app) {
-    app.LOG.info('checking hubroxy');
+    app.CONFIG.hub.paths = null;
+    app.LOG.info('checking hub');
 
     var existShop = function(shop) {
-        return app.hubUrl.indexOf(shop) != -1;
+        return app.CONFIG.hub.paths.indexOf(shop) != -1;
     };
 
     var proxyIt = function(shop, redirectPath, req, res) {
@@ -88,7 +89,7 @@ function hubProxy(app) {
         app.LOG.info('**** request-hub');
 
         // cache list
-        app.hubUrl = app.hubUrl || ["test_co"];
+        app.CONFIG.hub.paths = app.CONFIG.hub.paths || ["test_co"];
         var realm = 'hub';
 
         // check host
@@ -107,7 +108,7 @@ function hubProxy(app) {
             if (segments.length > 1) {
                 shop = segments[1];
 
-                if (app.hubUrl.indexOf(shop) != -1) {
+                if (app.CONFIG.hub.paths.indexOf(shop) != -1) {
                     pathname = '/portal'+ u.pathname;
                 }
             }
@@ -130,7 +131,7 @@ function hubProxy(app) {
                     pathname = '/portal'+ u.pathname;
                 }
 
-                // if (app.hubUrl.indexOf(shop) != -1) {
+                // if (app.CONFIG.hub.paths.indexOf(shop) != -1) {
                 //     // app.LOG.info('cache');
                 //     return proxyIt(shop, true, req, res);
                 // } else 
