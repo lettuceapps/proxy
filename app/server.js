@@ -54,6 +54,7 @@ app.configure(function () {
 // load controllers
 app.LOG.info('load controllers');
 require(path.resolve(__dirname, 'controllers/shops'))(app);
+require(path.resolve(__dirname, 'controllers/health'))(app);
 
 var hubKey = new Buffer(app.CONFIG.hub.key).toString('base64');
 
