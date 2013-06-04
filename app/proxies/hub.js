@@ -7,7 +7,7 @@ var url         = require('url'),
 
 function hubProxy(app) {
     app.CONFIG.hub.paths = null;
-    app.LOG.info('checking hubroxy');
+    app.LOG.info('checking hub');
 
     var existShop = function(shop) {
         return app.CONFIG.hub.paths.indexOf(shop) != -1;

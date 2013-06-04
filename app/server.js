@@ -50,7 +50,12 @@ app.configure(function () {
     app.use(app.router);
 });
 
+// load controllers
+app.LOG.info('load controllers');
+require(path.resolve(__dirname, 'controllers/shops'))(app);
+
 app.LOG.info('using port: ' + app.CONFIG.port);
+
 var options = {
     key: fs.readFileSync(path.resolve(__dirname, '../ssl_key/lettuceapps.com.key')),
     cert: fs.readFileSync(path.resolve(__dirname, '../ssl_key/lettuceapps.com.crt'))
