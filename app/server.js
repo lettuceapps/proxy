@@ -41,7 +41,7 @@ app.configure(function () {
     // Static content middleware
     app.use(express.methodOverride());
     app.use(express.bodyParser());
-    app.use(express.static(__dirname));
+    app.use(express.static(__dirname + '/public'));
 
     app.use(express.errorHandler({
         dumpExceptions: true,
