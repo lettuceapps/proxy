@@ -2,6 +2,12 @@
     "port": "443",
     "proxies": ["./proxies/hub.js", "./proxies/www.js"],
 
+    "proxy": {
+        "source": {
+            "host": "lb-proxy.lettuceapps.com"
+        }
+    },
+
     "api": {
         "source": {
             "host": "preview.lettuceapps.com"
@@ -11,6 +17,8 @@
         "port" : "80"
     },
     "hub": {
+        "key": "3t6rq7o8yufihljkns.dfa32r78yufadfxcv3da",
+
         "source": {
             "host": "preview.lettuceapps.com"
         },
