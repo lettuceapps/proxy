@@ -1,28 +1,34 @@
 'use strict';
 
-var path = require('path');
+var path    = require('path'),
+    fs      = require('fs'),
+    https   = require('https');
+
 
 module.exports = function(grunt) {
-  //   grunt.initConfig({
-  //       express: {
-  //           bases: 'www-root',
-  //           server: path.resolve('./server')
-  //       }
-  //   });
 
-  // grunt.loadNpmTasks('grunt-express');
+  //NODE_ENV=production
+  
+  var serverPort = 443;
 
-  // grunt.registerTask('default', ['express']);
+  grunt.initConfig({
+    express: {
+      custom: {
+          options: {
+            watchChanges: true,
+            keepaline: true,
+            port: serverPort,
+            bases: 'www-root',
+            server: path.resolve('./app/server')
+        }
+      }
+    }
+  });
 
-//NODE_ENV=production
+  grunt.loadNpmTasks('grunt-express');
 
-    var port = 3000;
-    grunt.registerTask('server', 'Start a custom web server.', function() {
-        grunt.log.writeln('Starting web server on port ' + port);
-        require('./server.js').listen(port);
-    });
-
+  grunt.registerTask('server', ['express', 'express-keepalive']);
 
   grunt.registerTask('default', ['server']);
-
+  
 }

@@ -1,17 +1,37 @@
 {
     "port": "443",
-    "proxyPath": "./proxies/",
+    "proxies": ["./proxies/hub.js", "./proxies/www.js"],
+
+    "proxy": {
+        "source": {
+            "host": "lb-proxy.lettuceapps.com"
+        }
+    },
 
     "api": {
+        "source": {
+            "host": "preview.lettuceapps.com"
+        },
+
         "host" : "api.lettuceapps.com",
         "port" : "80"
     },
     "hub": {
-        "host" : "hub.lettuceapps.com",
-        "port" : "80"
+        "key": "3t6rq7o8yufihljkns.dfa32r78yufadfxcv3da",
+
+        "source": {
+            "host": "preview.lettuceapps.com"
+        },
+        
+        "host" : "staging.lettuceapps.com",
+        "port" : "443"
     },
     "www": {
-        "host" : "www.lettuceapps.com",
-        "port" : "80"
+        "source": {
+            "host": "preview.lettuceapps.com"
+        },
+        
+        "host" : "preview.lettuceapps.com",
+        "port" : "443"
     }
 }
