@@ -3,7 +3,7 @@
     "non_secure_port": "57582",
     "proxies": ["./proxies/www.js"],
     "server_key": "3t6rq7o8yufihljkns.dfa32r78yufadfxcv3da",
-    "sources": ["local-www.lettuceapps.com"],
+    "sources": ["local-proxy.lettuceapps.com"],
     "destinations": {
         "hub": {
             "host" : "local-hub.lettuceapps.com",

@@ -35,7 +35,7 @@ function wwwProxy(app) {
 
         var buffer = httpProxy.buffer(req);
 
-        req.headers['X-Forwarded-Host'] = app.CONFIG.sources[0];
+        req.headers['X-Forwarded-Host'] = app.CONFIG.destinations[destination].host;
         req.headers['X-Forwarded-Path'] = originalUrl;
 
         return routingProxy.proxyRequest(req, res, {
@@ -83,10 +83,11 @@ function wwwProxy(app) {
         var referer = getReferer(req.headers.referer);
         var segments    = url.parse(req.url).pathname.split('/');
 
-        //check to make sure we should proxy in the first place 
-        app.LOG.info(host);
+        //if the host is pinging this proxy directly, then let it pass through.
+        //otherwise, proxy it to one of it's sources
         if (app.CONFIG.sources.indexOf(host) !== -1) {
-
+            return next();
+        } else {
             var vanity = findVanity(segments);
             var refererVanity = (referer) ? findVanity(referer.split('/', 2)) : null;
 
@@ -106,9 +107,6 @@ function wwwProxy(app) {
             
             // app.LOG.info('proxying to WWW');
             return proxyToDestination('www', null, req, res);
-
-        } else {
-            return next();
         }
     }
 }
