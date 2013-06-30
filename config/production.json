@@ -1,5 +1,6 @@
 {
     "port": "443",
+    "non_secure_port": "80",
     "proxies": ["./proxies/www.js"],
     "server_key": "3t6rq7o8yufihljkns.dfa32r78yufadfxcv3da",
     "source": "www.lettuceapps.com",

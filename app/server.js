@@ -6,6 +6,7 @@ var fs          = require('fs'),
     cluster     = require('cluster'),
     http        = require('http'),
     https       = require('https'),
+    net         = require('net'),
     express     = require('express');
 
 
@@ -98,6 +99,16 @@ var serverKey = new Buffer(app.CONFIG.server_key).toString('base64');
 loadKnownVanities(1);
 
 app.LOG.info('using port: ' + app.CONFIG.port);
+app.LOG.info('using forwarding all traffic on port  ' + app.CONFIG.non_secure_port + ' to port ' + app.CONFIG.port);
+
+//also forward all traffic from the non_secure_port, to this port
+var handle = net.createServer().listen(app.CONFIG.non_secure_port)
+http.createServer(function(req,res){
+    res.writeHead(301, {
+        'Location': 'https://' + req.headers["host"] + req.url
+    });
+    res.end();
+}).listen(handle);
 
 var options = {
     key: fs.readFileSync(path.resolve(__dirname, '../ssl_key/lettuceapps.com.key')),
