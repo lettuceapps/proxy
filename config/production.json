@@ -9,7 +9,7 @@
             "port" : "443"
         },
         "www": {
-            "host" : "www.lettuceapps.com",
+            "host" : "lb-www.lettuceapps.com",
             "port" : "443"
         }
     }
