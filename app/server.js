@@ -28,7 +28,7 @@ function loadProxies(files) {
 
 function loadKnownVanities(startIndex) {
     var options = {
-        host: app.CONFIG.destinations.hub.host,
+        host: app.CONFIG.destinations.hub.api,
         port: 443,
         path: '/v1/wholesale_portal/vanity?start_index=' + startIndex,
         method: 'GET',
