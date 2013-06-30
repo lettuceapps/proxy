@@ -3,6 +3,7 @@
 module.exports = function(app) {
     app.LOG.info('vanity api loaded');
 
+    //API TO CREATE A NEW VANITY
     app.post('/api/v1/vanity', function(req, res) {
         //validate the request first
         if (req.body.key !== app.CONFIG.server_key) {
@@ -34,7 +35,8 @@ module.exports = function(app) {
         res.send(JSON.stringify(result));
     });
 
-    app.get('/api/1.0/vanities', function(req, res) {
+    //API TO LIST ALL VANITIES
+    app.get('/api/v1/vanities', function(req, res) {
         var vanities = app.CONFIG.known_vanities;
         res.send(JSON.stringify({'vanities': vanities}));
     });
