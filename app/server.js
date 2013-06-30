@@ -1,7 +1,7 @@
 var fs          = require('fs'),
     path        = require('path'),
     util        = require('util'),
-    futures     = require('futures'),
+    // futures     = require('futures'),
     winston     = require('winston'),
     cluster     = require('cluster'),
     http        = require('http'),
@@ -15,7 +15,6 @@ var app         = express();
 app.CONFIG      = require('config');
 app.LOG         = winston;
 
-
 function loadProxies(files) {
     for(var f in files) {
         var file = files[f];
@@ -26,10 +25,49 @@ function loadProxies(files) {
     }
 }
 
+function loadKnownVanities(startIndex) {
+    var options = {
+        host: app.CONFIG.destinations.hub.host,
+        port: 443,
+        path: '/v1/wholesale_portal/vanity?start_index=' + startIndex,
+        method: 'GET',
+        headers: { 'Authorization': 'Server ' + serverKey }
+    };
+
+    https.request(options, function(res) {
+        res.setEncoding('utf8');
+        var data = '';
+
+        res.on('data', function (d) {
+            data += d;
+        });
+
+        res.on('end', function(d) {
+            app.CONFIG.known_vanities = app.CONFIG.known_vanities || [];
+
+            var result = JSON.parse(data);
+            var len = result.data.length;
+
+            for (var i = 0; i < len; i++) {
+                var vanity = result.data[i].vanity;
+                app.CONFIG.known_vanities.push(vanity);
+            }
+
+            //if there is still more to fetch, then fetch it.
+            if (parseInt(result.total_count, 10) > app.CONFIG.known_vanities.length && len > 0) {
+                loadKnownVanities(startIndex + len);
+            } else {
+                app.LOG.info('total_count: ' + app.CONFIG.known_vanities.length);
+                app.LOG.info('known_vanities: ' + JSON.stringify(app.CONFIG.known_vanities));
+            }
+        });
+    }).end();
+}
+
 app.enable('trust proxy');
 
 app.configure(function () {
-    // load proxies
+    //load a list of proxies from the config file
     loadProxies(app.CONFIG.proxies);
 
     for(var p in proxies) {
@@ -39,8 +77,8 @@ app.configure(function () {
     app.set('port', app.CONFIG.port);
 
     // Static content middleware
-    app.use(express.methodOverride());
-    app.use(express.bodyParser());
+    app.use(express.methodOverride()); //not being used
+    app.use(express.bodyParser()); //parsed json string automatically
     app.use(express.static(__dirname + '/public'));
 
     app.use(express.errorHandler({
@@ -52,45 +90,12 @@ app.configure(function () {
 });
 
 // load controllers
-app.LOG.info('load controllers');
 require(path.resolve(__dirname, 'controllers/shops'))(app);
 require(path.resolve(__dirname, 'controllers/health'))(app);
 
-var hubKey = new Buffer(app.CONFIG.hub.key).toString('base64');
+var serverKey = new Buffer(app.CONFIG.server_key).toString('base64');
 
-var options = {
-  host: app.CONFIG.hub.host,
-  port: 443,
-  path: '/v1/wholesale_portal/vanity?all=1',
-  method: 'GET',
-  headers: { 'Authorization': 'Server ' + hubKey }
-};
-
-https.request(options, function(res) {
-  //console.log('STATUS: ' + res.statusCode);
-  res.setEncoding('utf8');
-  var data = '';
-
-  res.on('data', function (d) {
-    data += d;
-  });
-
-  res.on('end', function(d) {
-    app.CONFIG.hub.paths = app.CONFIG.hub.paths || [];
-    var result = JSON.parse(data);
-    var i;
-
-    for (i = 0; i< result.data.length; i++) {
-        var vanity = result.data[i].vanity;
-
-        if (app.CONFIG.hub.paths.indexOf(vanity) === -1) {
-            app.CONFIG.hub.paths.push(vanity);
-        }
-    }
-
-    app.LOG.info(app.CONFIG.hub.paths);
-  });
-}).end();
+loadKnownVanities(1);
 
 app.LOG.info('using port: ' + app.CONFIG.port);
 
