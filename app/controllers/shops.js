@@ -1,7 +1,18 @@
 //app = module.parent.exports.app;
 
 module.exports = function(app) {
-    app.post('/api/1.0/shops/vanity', function(req, res) {
+    app.LOG.info('vanity api loaded');
+
+    app.post('/api/v1/vanity', function(req, res) {
+        //validate the request first
+        if (req.body.key !== app.CONFIG.server_key) {
+            res.send(JSON.stringify({
+                'status': '0',
+                'description': 'unauthorized'
+            }));
+            return;
+        }
+
         var vanities = app.CONFIG.known_vanities;
 
         var result = {
