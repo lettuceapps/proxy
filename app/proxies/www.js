@@ -35,7 +35,7 @@ function wwwProxy(app) {
 
         var buffer = httpProxy.buffer(req);
 
-        req.headers['X-Forwarded-Host'] = app.CONFIG.source;
+        req.headers['X-Forwarded-Host'] = app.CONFIG.sources[0];
         req.headers['X-Forwarded-Path'] = originalUrl;
 
         return routingProxy.proxyRequest(req, res, {
@@ -84,7 +84,8 @@ function wwwProxy(app) {
         var segments    = url.parse(req.url).pathname.split('/');
 
         //check to make sure we should proxy in the first place 
-        if (host === app.CONFIG.source) {
+        app.LOG.info(host);
+        if (app.CONFIG.sources.indexOf(host) !== -1) {
 
             var vanity = findVanity(segments);
             var refererVanity = (referer) ? findVanity(referer.split('/', 2)) : null;
