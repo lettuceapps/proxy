@@ -7,6 +7,7 @@
     "destinations": {
         "hub": {
             "host" : "local-hub.lettuceapps.com",
+            "api" : "local-hub.lettuceapps.com",
             "port" : "443"
         },
         "www": {
