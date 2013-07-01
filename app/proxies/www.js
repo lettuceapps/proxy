@@ -85,7 +85,7 @@ function wwwProxy(app) {
 
         //if the host is pinging this proxy directly (OR the load balancer is asking for health), then let it pass through.
         //otherwise, proxy it to one of it's sources
-        if (app.CONFIG.sources.indexOf(host) !== -1 || req.headers['user-agent'].indexOf('ELB-HealthChecker') !== -1) {
+        if (app.CONFIG.sources.indexOf(host) !== -1 || (req.headers['user-agent'] && req.headers['user-agent'].indexOf('ELB-HealthChecker') !== -1)) {
             return next();
         } else {
             var vanity = findVanity(segments);
