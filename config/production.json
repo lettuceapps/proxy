@@ -11,7 +11,7 @@
             "port" : "443"
         },
         "www": {
-            "host" : "lb-www.lettuceapps.com",
+            "host" : "sunset.lettuceapps.com",
             "port" : "443"
         }
     }
