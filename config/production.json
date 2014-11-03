@@ -11,7 +11,7 @@
             "port" : "443"
         },
         "www": {
-            "host" : "lettuce-sunset.herokuapp.com",
+            "host" : "lb-www.lettuceapps.com",
             "port" : "443"
         }
     }
