@@ -3,7 +3,7 @@
     "non_secure_port": "80",
     "proxies": ["./proxies/www.js"],
     "server_key": "3t6rq7o8yufihljkns.dfa32r78yufadfxcv3da",
-    "sources": ["proxy1.lettuceapps.com", "proxy2.lettuceapps.com", "proxy3.lettuceapps.com", "proxy4.lettuceapps.com", "lb-proxy.lettuceapps.com"],
+    "sources": ["proxy3.lettuceapps.com", "proxy4.lettuceapps.com", "lb-proxy.lettuceapps.com"],
     "destinations": {
         "hub": {
             "host" : "hub.lettuceapps.com",
