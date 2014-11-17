@@ -3,7 +3,7 @@
     "non_secure_port": "80",
     "proxies": ["./proxies/www.js"],
     "server_key": "3t6rq7o8yufihljkns.dfa32r78yufadfxcv3da",
-    "sources": ["proxy-staging.lettuceapps.com"],
+    "sources": ["proxy-staging1.lettuceapps.com"],
     "destinations": {
         "hub": {
             "host" : "staging.lettuceapps.com",
