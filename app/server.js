@@ -26,7 +26,7 @@ function loadProxies(files) {
     }
 }
 
-function loadKnownVanities(startIndex) {
+app.loadKnownVanities = function (startIndex) {
     var options = {
         host: app.CONFIG.destinations.hub.api,
         port: 443,
@@ -56,14 +56,14 @@ function loadKnownVanities(startIndex) {
 
             //if there is still more to fetch, then fetch it.
             if (parseInt(result.total_count, 10) > app.CONFIG.known_vanities.length && len > 0) {
-                loadKnownVanities(startIndex + len);
+                app.loadKnownVanities(startIndex + len);
             } else {
                 app.LOG.info('total_count: ' + app.CONFIG.known_vanities.length);
                 app.LOG.info('known_vanities: ' + JSON.stringify(app.CONFIG.known_vanities));
             }
         });
     }).end();
-}
+};
 
 app.enable('trust proxy');
 
@@ -96,7 +96,12 @@ require(path.resolve(__dirname, 'controllers/health'))(app);
 
 var serverKey = new Buffer(app.CONFIG.server_key).toString('base64');
 
-loadKnownVanities(1);
+app.loadKnownVanities(1);
+
+//ping every hour
+var vanityIntervalId = setInterval(function(){
+    app.loadKnownVanities(app.CONFIG.known_vanities.length+1); //+1 bc start index starts at 1
+},3600000);
 
 app.LOG.info('using port: ' + app.CONFIG.port);
 app.LOG.info('using forwarding all traffic on port  ' + app.CONFIG.non_secure_port + ' to port ' + app.CONFIG.port);
