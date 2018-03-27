@@ -98,6 +98,11 @@ var serverKey = new Buffer(app.CONFIG.server_key).toString('base64');
 
 loadKnownVanities(1);
 
+//ping every hour
+var vanityIntervalId = setInterval(function(){
+    loadKnownVanities(app.CONFIG.known_vanities.length+1); //+1 bc start index starts at 1
+},3600000);
+
 app.LOG.info('using port: ' + app.CONFIG.port);
 app.LOG.info('using forwarding all traffic on port  ' + app.CONFIG.non_secure_port + ' to port ' + app.CONFIG.port);
 

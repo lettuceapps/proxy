@@ -11,18 +11,13 @@ function wwwProxy(app) {
     //proxy to the specified destination
     var proxyToDestination = function(destination, vanity, req, res) {
         var options = {
-            target : { // options for proxy target
-                port: app.CONFIG.destinations[destination].port,
-                host: app.CONFIG.destinations[destination].host,
-                https: true
-            },
-            enable : {
-                xforward: true // enables X-Forwarded-For
-            },
-            changeOrigin: true // changes the origin of the host header to the target URL
+            target : app.CONFIG.destinations[destination].port + ':' + app.CONFIG.destinations[destination].host,
+            xfwd : true,
+            secure: true
+            //other params: forward, agent, ssl
         };
 
-        var routingProxy = new httpProxy.RoutingProxy(options);
+        var routingProxy = new httpProxy.createProxyServer(options);
         var originalUrl = req.url;
 
         //add the portal directory
@@ -33,15 +28,12 @@ function wwwProxy(app) {
         // app.LOG.info('vanity: ' + vanity);
         // app.LOG.info('redirecting to: ' + destination + ' (' + req.url + ')');
 
-        var buffer = httpProxy.buffer(req);
-
         req.headers['X-Forwarded-Host'] = app.CONFIG.destinations[destination].host;
         req.headers['X-Forwarded-Path'] = originalUrl;
 
-        return routingProxy.proxyRequest(req, res, {
+        return routingProxy.web(req, res, {
             host: app.CONFIG.destinations[destination].host, 
-            port: app.CONFIG.destinations[destination].port,
-            buffer: buffer
+            port: app.CONFIG.destinations[destination].port
         });
     };
 
